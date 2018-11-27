@@ -1,0 +1,75 @@
+﻿@model AddressBookMVC.Models.AddressModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>AddressModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Zip)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Zip)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.emailaddress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.emailaddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Audits)
+        </dt>
+        <dd>
+            <table class="table">
+                <tr>
+                    <th>Update Description</th>
+                    <th>Updated By</th>
+                    <th>Updated On</th>
+                </tr>
+                @foreach (var item in Model.Audits)
+                {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Updates)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UpdatedBy)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UpdatedOn)
+                    </td>
+                </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.InfoId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
