@@ -9,6 +9,14 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+
+@using (Html.BeginForm("Index", "Address", FormMethod.Get))
+{
+    <p>
+        Find by Email: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <tr>
         <th>
@@ -26,26 +34,27 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Zip)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.emailaddress)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.InfoId }) |
-            @Html.ActionLink("Select", "Details", new { id=item.InfoId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.InfoId })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Zip)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.emailaddress)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.InfoId }) |
+                @Html.ActionLink("Select", "Details", new { id = item.InfoId }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.InfoId })
+            </td>
+        </tr>
+    }
 
 </table>

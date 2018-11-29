@@ -15,6 +15,7 @@ namespace AddressBookMVC.Models
         public Nullable<int> Zip { get; set; }
         public string emailaddress { get; set; }
 
+
         public virtual ICollection<AuditModel> Audits { get; set; }
     }
 }
