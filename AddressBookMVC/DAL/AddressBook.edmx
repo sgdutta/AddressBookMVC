@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="AddressBookModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="AddressBookModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AddressDetails">
           <Key>
             <PropertyRef Name="InfoId" />
@@ -14,6 +14,7 @@
           <Property Name="LastName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Zip" Type="int" />
           <Property Name="emailaddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="Deleted" Type="bit" />
         </EntityType>
         <EntityType Name="Audit">
           <Key>
@@ -45,8 +46,7 @@
             <End Role="Audit" EntitySet="Audit" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="AddressBookModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -60,6 +60,7 @@
           <Property Name="Zip" Type="Int32" />
           <Property Name="emailaddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Audits" Relationship="Self.FK__Audit__InfoId__25869641" FromRole="AddressDetails" ToRole="Audit" />
+          <Property Name="Deleted" Type="Boolean" />
         </EntityType>
         <EntityType Name="Audit">
           <Key>
@@ -101,6 +102,7 @@
           <EntitySetMapping Name="AddressDetails">
             <EntityTypeMapping TypeName="AddressBookModel.AddressDetail">
               <MappingFragment StoreEntitySet="AddressDetails">
+                <ScalarProperty Name="Deleted" ColumnName="Deleted" />
                 <ScalarProperty Name="InfoId" ColumnName="InfoId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />

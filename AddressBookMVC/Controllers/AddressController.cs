@@ -72,9 +72,9 @@ namespace AddressBookMVC.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             AddressModel  address = config.GetAddressesById((int)id);
-            if (address == null)
+            if (address.InfoId<1)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error");
             }
             return View(address);
 
@@ -82,6 +82,12 @@ namespace AddressBookMVC.Controllers
 
         [HttpGet]
         public ActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult Error()
         {
             return View();
         }
@@ -118,7 +124,7 @@ namespace AddressBookMVC.Controllers
             AddressModel address = config.GetAddressesById((int)id);
             if (address == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error");
             }
             return View(address);
         }
@@ -162,7 +168,7 @@ namespace AddressBookMVC.Controllers
             AddressModel address = config.GetAddressesById((int)id);
             if (address == null)
             {
-                return HttpNotFound();
+                return RedirectToAction("Error");
             }
             return View(address);
         }

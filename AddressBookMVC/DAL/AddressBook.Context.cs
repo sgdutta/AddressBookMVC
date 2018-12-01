@@ -27,7 +27,5 @@ namespace AddressBookMVC.DAL
     
         public virtual DbSet<AddressDetail> AddressDetails { get; set; }
         public virtual DbSet<Audit> Audits { get; set; }
-
-        public System.Data.Entity.DbSet<AddressBookMVC.Models.AddressModel> AddressModels { get; set; }
     }
 }

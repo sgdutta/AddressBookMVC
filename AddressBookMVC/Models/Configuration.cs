@@ -21,7 +21,7 @@ namespace AddressBookMVC.Models
 
             using (var context = new AddressBookEntities())
             {
-                allAddresses = addressDb.AddressDetails.Include("AddressDetail")
+                allAddresses = addressDb.AddressDetails.Include("AddressDetail").Where(w => w.Deleted==false)
                     .Select(s => new AddressModel()
                     {
                         InfoId = s.InfoId,
@@ -41,8 +41,8 @@ namespace AddressBookMVC.Models
         {
            // IList<AddressModel> allAddresses = null;
 
-            var query = (from s in addressDb.AddressDetails
-                        select new AddressModel()
+            var query = (from s in addressDb.AddressDetails.Where(w => w.Deleted == false)
+                         select new AddressModel()
                         {
                             InfoId = s.InfoId,
                             FirstName = s.FirstName,
@@ -59,24 +59,28 @@ namespace AddressBookMVC.Models
         public AddressModel GetAddressesById(int id)
         {
 
-            AddressDetail addressContext = addressDb.AddressDetails.Where(w => w.InfoId == id).FirstOrDefault();
+            AddressDetail addressContext = addressDb.AddressDetails.Where(w => w.InfoId == id && w.Deleted==false).FirstOrDefault();
             ICollection<Audit> auditContext = addressDb.Audits.Where(w => w.InfoId == id).ToList();
             ICollection<Audit> audits = addressDb.Audits.Where(w => w.InfoId == id).ToList();
             AddressModel addrModel = new AddressModel();
 
-            addrModel.InfoId = addressContext.InfoId;
-            addrModel.FirstName = addressContext.FirstName;
-            addrModel.LastName = addressContext.LastName;
-            addrModel.emailaddress = addressContext.emailaddress;
-            addrModel.Zip = addressContext.Zip;
-            addrModel.Audits = audits
-                    .Select(s => new AuditModel()
-                    {
-                        Updates= s.Updates,
-                        UpdatedBy = s.UpdatedBy,
-                        UpdatedOn = s.UpdatedOn
+            if(addressContext!=null)
+            {
+                addrModel.InfoId = addressContext.InfoId;
+                addrModel.FirstName = addressContext.FirstName;
+                addrModel.LastName = addressContext.LastName;
+                addrModel.emailaddress = addressContext.emailaddress;
+                addrModel.Zip = addressContext.Zip;
+                addrModel.Audits = audits
+                        .Select(s => new AuditModel()
+                        {
+                            Updates = s.Updates,
+                            UpdatedBy = s.UpdatedBy,
+                            UpdatedOn = s.UpdatedOn
 
-                    }).ToList();
+                        }).ToList();
+            }
+
 
             return addrModel;
 
@@ -86,7 +90,7 @@ namespace AddressBookMVC.Models
         {
             ICollection<Audit> auditContext = addressDb.Audits.Where(w => w.InfoId == id).ToList();
             var query = (from s in addressDb.AddressDetails
-                         where s.InfoId == id
+                         where s.InfoId == id && s.Deleted == false
                          select new AddressModel()
                          {
                              InfoId = s.InfoId,
@@ -123,7 +127,7 @@ namespace AddressBookMVC.Models
             {
                 int id = Convert.ToInt32(s);
 
-                    allAddresses = addressDb.AddressDetails.Include("AddressDetail").Where(w=>w.InfoId==id)
+                    allAddresses = addressDb.AddressDetails.Include("AddressDetail").Where(w=>w.InfoId==id && w.Deleted == false)
                         .Select(a => new AddressModel()
                         {
                             InfoId = a.InfoId,
@@ -138,7 +142,7 @@ namespace AddressBookMVC.Models
 
             else
             {
-                    allAddresses = addressDb.AddressDetails.Include("AddressDetail").Where(w => w.emailaddress.Contains(s))
+                    allAddresses = addressDb.AddressDetails.Include("AddressDetail").Where(w => w.emailaddress.Contains(s) && w.Deleted == false)
                         .Select(a => new AddressModel()
                         {
                             InfoId = a.InfoId,
@@ -166,13 +170,13 @@ namespace AddressBookMVC.Models
             //addrsDtl.Zip = addr.Zip;
             //addrsDtl.emailaddress = addr.emailaddress;
 
-
+            addr.Deleted = false;
             addressDb.AddressDetails.Add(addr);
             addressDb.SaveChanges();
 
             Audit auditDb = new Audit();
             auditDb.InfoId = addressDb.AddressDetails.Max(m => m.InfoId);
-            auditDb.UpdatedBy = "System";
+            auditDb.UpdatedBy = "System";//It can be replaced by users
             auditDb.Updates = "Created";
             auditDb.UpdatedOn = DateTime.Today;
 
@@ -184,13 +188,13 @@ namespace AddressBookMVC.Models
 
         public async Task<string> CreateAddressAsync(AddressDetail addr)
         {
-
+            addr.Deleted = false;
             addressDb.AddressDetails.Add(addr);
             addressDb.SaveChanges();
 
             Audit auditDb = new Audit();
             auditDb.InfoId = addressDb.AddressDetails.Max(m => m.InfoId);
-            auditDb.UpdatedBy = "System";
+            auditDb.UpdatedBy = "System";//It can be replaced by users
             auditDb.Updates = "Created";
             auditDb.UpdatedOn = DateTime.Today;
 
@@ -213,7 +217,7 @@ namespace AddressBookMVC.Models
             //Enter new audit for updates
             Audit auditDb = new Audit();
             auditDb.InfoId = addr.InfoId;
-            auditDb.UpdatedBy = "Test";
+            auditDb.UpdatedBy = "Test";//It can be replaced by users
             auditDb.Updates = "Updated";
             auditDb.UpdatedOn = DateTime.Today;
 
@@ -228,23 +232,23 @@ namespace AddressBookMVC.Models
             AddressDetail addrContext = addressDb.AddressDetails.Where(w => w.InfoId == id).FirstOrDefault();
             IList<Audit> auditContext = addressDb.Audits.Where(w => w.InfoId == id).ToList();
 
-            foreach(var aud in auditContext)
-            {
-                addressDb.Audits.Remove(aud);
-            }
+            //foreach(var aud in auditContext)
+            //{
+            //    addressDb.Audits.Remove(aud);
+            //}
 
-            addressDb.AddressDetails.Remove(addrContext);
-            addressDb.SaveChanges();
+            addrContext.Deleted = true;
+            //addressDb.SaveChanges();
 
             //Enter new audit for updates
-            //Audit auditDb = new Audit();
-            //auditDb.InfoId = id;
-            //auditDb.UpdatedBy = "Test";
-            //auditDb.Updates = "Deleted";
-            //auditDb.UpdatedOn = DateTime.Today;
+            Audit auditDb = new Audit();
+            auditDb.InfoId = id;
+            auditDb.UpdatedBy = "Test"; //It can be replaced by users
+            auditDb.Updates = "Deleted";
+            auditDb.UpdatedOn = DateTime.Today;
 
-            //addressDb.Audits.Add(auditDb);
-            //addressDb.SaveChanges();
+            addressDb.Audits.Add(auditDb);
+            addressDb.SaveChanges();
 
             return;
         }

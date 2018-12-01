@@ -25,6 +25,7 @@ namespace AddressBookMVC.DAL
         public string LastName { get; set; }
         public Nullable<int> Zip { get; set; }
         public string emailaddress { get; set; }
+        public Nullable<bool> Deleted { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Audit> Audits { get; set; }
